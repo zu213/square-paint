@@ -6,8 +6,10 @@
 
 
     void setupInitialSquares() {
-        Square mySquare(-0.5f, -0.5f, 1.0f, 1.0f);
+        float indent = 2.0 / 215;
+        Square mySquare(-1.0f + indent, -1.0f + indent, 2.0f - indent, 2.0f - indent);
         mySquare.draw();
+        mySquare.initSubsquares();
     }
 
     void display() {
@@ -35,7 +37,7 @@
         glutInit(&argc, argv);
         glutCreateWindow("Square paint");
         glutMouseFunc(mouseClick);
-        glutInitWindowSize(320, 320);   // Set the window's initial width & height
+        glutInitWindowSize(215, 215);   // Set the window's initial width & height
         glutInitWindowPosition(50, 50); // Position the window
         glutDisplayFunc(display);
         glutMainLoop();
