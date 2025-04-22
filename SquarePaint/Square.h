@@ -17,6 +17,8 @@ public:
     void initSubsquares();
 
     void draw() const;
+
+    void handleClick(int inputX, int inputY, bool leftClick);
 };
 
 #endif
