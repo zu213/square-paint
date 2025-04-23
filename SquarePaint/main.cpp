@@ -26,13 +26,10 @@
     void mouseClick(int button, int state, int x, int y) {
         if (state == GLUT_DOWN) { // When the button is pressed
             if (button == GLUT_LEFT_BUTTON) {
-                printf("Left click at (%d, %d)\n", x, y);
-                mainSquare->handleClick(x, y, true);
+                mainSquare->handleClick(x, y * -1 + 215, true);
             }
             else if (button == GLUT_RIGHT_BUTTON) {
-                printf("Right click at (%d, %d)\n", x, y);
-                mainSquare->handleClick(x, y, false);
-
+                mainSquare->handleClick(x, y * -1 + 215, false);
             }
             glFlush();
         }
