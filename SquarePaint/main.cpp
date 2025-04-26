@@ -5,6 +5,9 @@
 
 
     Square* mainSquare = nullptr;
+    float currentRed = 1.0f;
+    float currentGreen = 0.0f;
+    float currentBlue = 0.0f;
 
     void setupInitialSquares() {
         float indent = 2.0 / 215;
