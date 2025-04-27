@@ -12,13 +12,18 @@ public:
 
     Square(float x, float y, float width, float height);
 
+    Square(float x, float y, float width, float height, float red, float green, float blue);
+
     void setColour(float red, float green, float blue);
 
     void initSubsquares();
 
     void draw();
 
-    void handleClick(int inputX, int inputY, bool leftClick);
+    void handleClick(int inputX, int inputY);
+
+    void handleClick(int inputX, int inputY, float* colours);
+
 };
 
 #endif

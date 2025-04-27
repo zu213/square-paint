@@ -6,6 +6,9 @@
 Square::Square(float x, float y, float width, float height)
     : x(x), y(y), width(width), height(height), red(0.0f), green(0.0f), blue(0.0f) {}
 
+Square::Square(float x, float y, float width, float height, float red, float green, float blue)
+    : x(x), y(y), width(width), height(height), red(red), green(green), blue(blue) {}
+
 void Square::draw() {
     glColor3f(1.0f, 1.0f, 1.0f);
 
@@ -30,7 +33,7 @@ void Square::initSubsquares(){
         for (int j = 0; j < 3; j++) {
             float xLocal = x + (j + 1) * indent + (split + indent) * j;
             float yLocal = y + (1 + i) * indent + (split + indent) * i;
-            Square newSquare = Square(xLocal, yLocal, split, split);
+            Square newSquare = Square(xLocal, yLocal, split, split, red, green, blue);
             newSquare.draw();
             subsquares.push_back(newSquare);
         }
@@ -42,7 +45,7 @@ void Square::setColour(float localRed, float localGreen, float localBlue) {
     blue = localBlue;
     green = localGreen;
 
-    glColor3f(red / 255.0, green / 255.0, blue / 255.0);
+    glColor3f(red, green, blue);
     glBegin(GL_QUADS);
     glVertex2f(x, y);
     glVertex2f(x + width, y);
@@ -51,23 +54,33 @@ void Square::setColour(float localRed, float localGreen, float localBlue) {
     glEnd();
 }
 
-
-void Square::handleClick(int inputX, int inputY, bool leftClick) {
+void Square::handleClick(int inputX, int inputY) {
     if (subsquares.size() > 0) {
         float localX = (inputX / (215.0 / 2)) - 1;
         float localY = (inputY / (215.0 / 2)) - 1;
         for (int i = 0; i < subsquares.size(); i++) {
             if (subsquares[i].x + subsquares[i].width > localX && subsquares[i].y + subsquares[i].height > localY) {
-                subsquares[i].handleClick(inputX, inputY, leftClick);
+                subsquares[i].handleClick(inputX, inputY);
                 break;
             }
         }
     } else {
-        if (leftClick) {
-            initSubsquares();
+           initSubsquares();
+    }
+}
+
+void Square::handleClick(int inputX, int inputY, float* colours) {
+    if (subsquares.size() > 0) {
+        float localX = (inputX / (215.0 / 2)) - 1;
+        float localY = (inputY / (215.0 / 2)) - 1;
+        for (int i = 0; i < subsquares.size(); i++) {
+            if (subsquares[i].x + subsquares[i].width > localX && subsquares[i].y + subsquares[i].height > localY) {
+                subsquares[i].handleClick(inputX, inputY, colours);
+                break;
+            }
         }
-        else {
-            setColour(255, 255, 0);
-        }
+    }
+    else {
+        setColour(colours[0] ,colours[1], colours[2]);
     }
 }
