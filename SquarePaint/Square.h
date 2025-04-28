@@ -8,11 +8,12 @@ public:
     float width, height;
     float red, green, blue;
     std::vector<Square> subsquares;
+    float screenWidth, screenHeight;
 
 
-    Square(float x, float y, float width, float height);
+    Square(float x, float y, float width, float height, float screenWidth, float screenHeight);
 
-    Square(float x, float y, float width, float height, float red, float green, float blue);
+    Square(float x, float y, float width, float height, float red, float green, float blue, float screenWidth, float screenHeight);
 
     void setColour(float red, float green, float blue);
 
@@ -23,6 +24,8 @@ public:
     void handleClick(int inputX, int inputY);
 
     void handleClick(int inputX, int inputY, float* colours);
+
+    void setScreenAttr(float newScreenWidth, float newScreenHeight);
 
 };
 
