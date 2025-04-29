@@ -19,7 +19,7 @@ public:
 
     void initSubsquares();
 
-    void draw();
+    void draw(float gridRed, float gridGreen, float gridBlue, bool disableGrid);
 
     void handleClick(int inputX, int inputY);
 

@@ -9,20 +9,22 @@ Square::Square(float x, float y, float width, float height, float screenWidth, f
 Square::Square(float x, float y, float width, float height, float red, float green, float blue, float screenWidth, float screenHeight)
     : x(x), y(y), width(width), height(height), red(red), green(green), blue(blue), screenWidth(screenWidth), screenHeight(screenHeight) {}
 
-void Square::draw() {
-    glColor3f(1.0f, 1.0f, 1.0f);
-    glLineWidth(2.0f);
-    glBegin(GL_LINE_LOOP);
-    glVertex2f(x, y);
-    glVertex2f(x + width, y);
-    glVertex2f(x + width, y + height);
-    glVertex2f(x, y + height);
-    glEnd();
+void Square::draw(float gridRed, float gridGreen, float gridBlue, bool disableGrid) {
+    if (!disableGrid) {
+        glColor3f(gridRed, gridGreen, gridBlue);
+        glLineWidth(2.0f);
+        glBegin(GL_LINE_LOOP);
+        glVertex2f(x, y);
+        glVertex2f(x + width, y);
+        glVertex2f(x + width, y + height);
+        glVertex2f(x, y + height);
+        glEnd();
+    }
 
     setColour(red, green, blue);
 
     for (int i = 0; i < subsquares.size(); i++) {
-        subsquares[i].draw();
+        subsquares[i].draw(gridRed, gridGreen, gridBlue, disableGrid);
     }
 }
 
@@ -34,7 +36,7 @@ void Square::initSubsquares(){
             float xLocal = x + (split) * j;
             float yLocal = y + (split) * i;
             Square newSquare = Square(xLocal, yLocal, split, split, red, green, blue, screenWidth, screenHeight);
-            newSquare.draw();
+            //newSquare.draw();
             subsquares.push_back(newSquare);
         }
     }
@@ -93,7 +95,7 @@ void Square::setScreenAttr(float newScreenWidth, float newScreenHeight) {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 subsquares[i * 3 + j].setScreenAttr(screenWidth, screenHeight);
-                subsquares[i * 3 + j].draw();
+                //subsquares[i * 3 + j].draw();
             }
         }
     }

@@ -14,12 +14,17 @@ float currentRed = 1.0f;
 float currentGreen = 0.0f;
 float currentBlue = 0.0f;
 bool paletteVisible = false;
+bool paletteVisibleForGrid = false;
+float gridRed = 1.0f;
+float gridGreen = 1.0f;
+float gridBlue = 1.0f;
+bool gridDisabled = false;
 Palette palette = Palette(-0.9, -0.5, 1.8, 0.5);
 
 void setupInitialSquares() {
     float indent = 2.0 / screenWidth;
     mainSquare = new Square(-1.0f + indent, -1.0f + indent, 2.0f - indent, 2.0f - indent, screenWidth, screenHeight);
-    mainSquare->draw();
+    mainSquare->draw(gridRed, gridGreen, gridBlue, gridDisabled);
     mainSquare->initSubsquares();
 }
 
@@ -27,8 +32,8 @@ void display() {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Set background color to black and opaque
     glClear(GL_COLOR_BUFFER_BIT);
 
-    if (mainSquare) mainSquare->draw();
-    if (paletteVisible) palette.draw();
+    if (mainSquare) mainSquare->draw(gridRed, gridGreen, gridBlue, gridDisabled);
+    if (paletteVisible || paletteVisibleForGrid) palette.draw();
 
     glFlush();
 }
@@ -36,15 +41,22 @@ void display() {
 void mouseClick(int button, int state, int x, int y) {
     if (state == GLUT_DOWN) { // When the button is pressed
         if (button == GLUT_LEFT_BUTTON) {
-            if (paletteVisible) {
+            if (paletteVisible || paletteVisibleForGrid) {
                 float localX = ((x * 1.0f) / (screenWidth / 2)) - 1.0f;
                 float localY = ((y * -1.0f + screenHeight) / (screenHeight / 2)) - 1.0f;
-                std::cout << "local x: " << localX << " localy: " << localY << '\n';
                 float* newColours = palette.handleClick(localX, localY);
-                currentRed = newColours[0];
-                currentGreen = newColours[1];
-                currentBlue = newColours[2];
-                paletteVisible = false;
+                if (paletteVisible) {
+                    currentRed = newColours[0];
+                    currentGreen = newColours[1];
+                    currentBlue = newColours[2];
+                    paletteVisible = false;
+                }
+                else if (paletteVisibleForGrid) {
+                    gridRed = newColours[0];
+                    gridGreen = newColours[1];
+                    gridBlue = newColours[2];
+                    paletteVisibleForGrid = false;
+                }
             }
             else {
                 float newColours[3];
@@ -64,6 +76,15 @@ void mouseClick(int button, int state, int x, int y) {
 void keyboardPress(unsigned char key, int x, int y) {
     if (key == 'p'){
         paletteVisible = !paletteVisible;
+        palette.initColours();
+        display();
+    }
+    else if (key == 'o') {
+        gridDisabled = !gridDisabled;
+        display();
+    }
+    else if (key == 'i') {
+        paletteVisibleForGrid = !paletteVisibleForGrid;
         palette.initColours();
         display();
     }

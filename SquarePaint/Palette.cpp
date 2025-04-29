@@ -14,8 +14,11 @@ void Palette::initColours() {
     float red = 1.0f;
     float green = 0.0f;
     float blue = 0.0f;
-    int countTotal = (width - (0.6f / 215)) * 215 / 2;
+    int countTotal = (width - (2.6f / 215)) * 215 / 2;
     float colourInterval = 1.0f / (countTotal / 3);
+
+    colours.push_back(PaletteColour(modX, modY, modWidth, modHeight, 1.0f, 1.0f, 1.0f));
+    modX += (2.0f / 215);
 
     for (int i = 0; i < countTotal; i++) {
         colours.push_back(PaletteColour(modX, modY, modWidth, modHeight, red, green, blue));
