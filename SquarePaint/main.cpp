@@ -37,11 +37,13 @@ void mouseClick(int button, int state, int x, int y) {
     if (state == GLUT_DOWN) { // When the button is pressed
         if (button == GLUT_LEFT_BUTTON) {
             if (paletteVisible) {
-                float* newColours = palette.handleClick(x, y * -1 + screenHeight);
+                float localX = ((x * 1.0f) / (screenWidth / 2)) - 1.0f;
+                float localY = ((y * -1.0f + screenHeight) / (screenHeight / 2)) - 1.0f;
+                std::cout << "local x: " << localX << " localy: " << localY << '\n';
+                float* newColours = palette.handleClick(localX, localY);
                 currentRed = newColours[0];
                 currentGreen = newColours[1];
                 currentBlue = newColours[2];
-
                 paletteVisible = false;
             }
             else {
@@ -62,23 +64,18 @@ void mouseClick(int button, int state, int x, int y) {
 void keyboardPress(unsigned char key, int x, int y) {
     if (key == 'p'){
         paletteVisible = !paletteVisible;
+        palette.initColours();
         display();
     }
     glFlush();
 }
 
 void reshape(int width, int height) {
-    // width and height are the new window size!
-    glViewport(0, 0, width, height); // update OpenGL viewport
-
-    // (Optional) update your stuff that depends on window size
-    std::cout << "Window resized to " << width << "x" << height << std::endl;
+    glViewport(0, 0, width, height);
     screenWidth = width;
     screenHeight = height;
     float indent = 2.0 / screenWidth;
     mainSquare->setScreenAttr(screenWidth, screenHeight);
-
-    // You can also update projection matrix here if you use one
 }
 
 int main(int argc, char** argv) {

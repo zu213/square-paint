@@ -4,13 +4,42 @@
 #include <iostream>
 
 Palette::Palette(float x, float y, float width, float height)
-    : x(x), y(y), width(width), height(height) {}
+    : x(x), y(y), width(width), height(height), colours(colours) {}
+
+void Palette::initColours() {
+    float modX = x + (0.6f / 215);
+    float modY = y + (0.8f / 215);
+    float modWidth = (2.0f / 215);
+    float modHeight = height - (1.6f / 215);
+    float red = 1.0f;
+    float green = 0.0f;
+    float blue = 0.0f;
+    int countTotal = (width - (0.6f / 215)) * 215 / 2;
+    float colourInterval = 1.0f / (countTotal / 3);
+
+    for (int i = 0; i < countTotal; i++) {
+        colours.push_back(PaletteColour(modX, modY, modWidth, modHeight, red, green, blue));
+        if (i < countTotal / 3) {
+            red -= colourInterval;
+            green += colourInterval;
+        }
+        else if (i < (2 * countTotal) / 3) {
+            red = 0.0f;
+            green -= colourInterval;
+            blue += colourInterval;
+        }
+        else {
+            green = 0.0f;
+            blue -= colourInterval;
+            red += colourInterval;
+        }
+        modX += (2.0f / 215);
+
+    }
+}
 
 void Palette::draw() {
     glColor3f(1.0f, 1.0f, 1.0f);
-
-
-    std::cout << "x: " << x << " Y: " << y << " width: " << width << " height: " << height << "\n";
     glBegin(GL_LINE_LOOP);
     glVertex2f(x, y);
     glVertex2f(x + width, y);
@@ -18,48 +47,15 @@ void Palette::draw() {
     glVertex2f(x, y + height);
     glEnd();
 
-
-    float modX = x + 16.0f / 215;
-    float modY = y + 2.0f / 215;
-    float modWidth = (width - 50.0f / 215) / 3;
-    float modHeight = height - 10.0f / 215;
-    glColor3f(1.0f, 0.0f, 0.0f);
-    glBegin(GL_QUADS);
-    glVertex2f(modX, modY);
-    glVertex2f(modX + modWidth, modY);
-    glVertex2f(modX + modWidth, modY + modHeight);
-    glVertex2f(modX, modY + modHeight);
-    glEnd();
-    colours.push_back(PaletteColour(modX, modY, modWidth, modHeight, 1.0f, 0.0f, 0.0f));
-
-    modX += (modWidth + 10.0f / 215);
-    glColor3f(0.0f, 1.0f, 0.0f);
-    glBegin(GL_QUADS);
-    glVertex2f(modX, modY);
-    glVertex2f(modX + modWidth, modY);
-    glVertex2f(modX + modWidth, modY + modHeight);
-    glVertex2f(modX, modY + modHeight);
-    glEnd();
-    colours.push_back(PaletteColour(modX, modY, modWidth, modHeight, 0.0f, 1.0f, 0.0f));
-
-
-    modX += (modWidth + 10.0f / 215);
-    glColor3f(0.0f, 0.0f, 1.0f);
-    glBegin(GL_QUADS);
-    glVertex2f(modX, modY);
-    glVertex2f(modX + modWidth, modY);
-    glVertex2f(modX + modWidth, modY + modHeight);
-    glVertex2f(modX, modY + modHeight);
-    glEnd();
-    colours.push_back(PaletteColour(modX, modY, modWidth, modHeight, 0.0f, 0.0f, 1.0f));
+    for (int i = 0; i < colours.size(); i++) {
+        colours[i].draw();
+    }
 }
 
 
-float* Palette::handleClick(int inputX, int inputY) {
-    float localX = (inputX / (215.0 / 2)) - 1;
-    float localY = (inputY / (215.0 / 2)) - 1;
+float* Palette::handleClick(float inputX, float inputY) {
     for (int i = 0; i < colours.size(); i++) {
-        if (colours[i].clickInside(localX, localY)) {
+        if (colours[i].clickInside(inputX, inputY)) {
             return colours[i].getColour();
         }
     }

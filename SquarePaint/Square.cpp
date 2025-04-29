@@ -11,6 +11,7 @@ Square::Square(float x, float y, float width, float height, float red, float gre
 
 void Square::draw() {
     glColor3f(1.0f, 1.0f, 1.0f);
+    glLineWidth(2.0f);
     glBegin(GL_LINE_LOOP);
     glVertex2f(x, y);
     glVertex2f(x + width, y);
@@ -26,12 +27,12 @@ void Square::draw() {
 }
 
 void Square::initSubsquares(){
-    float indent = 2.0f / screenWidth;
-    float split = (width - 2 * indent) / 3;
+    float indent = 1.5f / screenWidth;
+    float split = (width - indent) / 3;
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
-            float xLocal = x + (j + 1) * indent + (split + indent) * j;
-            float yLocal = y + (1 + i) * indent + (split + indent) * i;
+            float xLocal = x + (split) * j;
+            float yLocal = y + (split) * i;
             Square newSquare = Square(xLocal, yLocal, split, split, red, green, blue, screenWidth, screenHeight);
             newSquare.draw();
             subsquares.push_back(newSquare);
@@ -43,13 +44,14 @@ void Square::setColour(float localRed, float localGreen, float localBlue) {
     red = localRed;
     blue = localBlue;
     green = localGreen;
+    float indent = 2.0f / screenWidth;
 
     glColor3f(red, green, blue);
     glBegin(GL_QUADS);
     glVertex2f(x, y);
-    glVertex2f(x + width, y);
-    glVertex2f(x + width, y + height);
-    glVertex2f(x, y + height);
+    glVertex2f(x + width - indent, y);
+    glVertex2f(x + width - indent, y + height - indent);
+    glVertex2f(x, y + height - indent);
     glEnd();
 }
 
@@ -63,8 +65,8 @@ void Square::handleClick(int inputX, int inputY) {
                 break;
             }
         }
-    } else {
-           initSubsquares();
+    } else if (screenWidth * width / 2 > 10 && screenHeight * height / 2 > 10) {
+        initSubsquares();
     }
 }
 

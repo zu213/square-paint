@@ -11,9 +11,11 @@ public:
 
     Palette(float x, float y, float width, float height);
 
+    void initColours();
+
     void draw();
 
-    float* handleClick(int inputX, int inputY);
+    float* handleClick(float inputX, float inputY);
 };
 
 #endif
