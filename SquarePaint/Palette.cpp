@@ -4,7 +4,7 @@
 #include <iostream>
 
 Palette::Palette(float x, float y, float width, float height)
-    : x(x), y(y), width(width), height(height), colours(colours) {}
+    : x(x), y(y), width(width), height(height), colours(colours), scale(1.0f) {}
 
 void Palette::initColours() {
     float modX = x + (0.6f / 215);
@@ -39,15 +39,19 @@ void Palette::initColours() {
         modX += (2.0f / 215);
 
     }
+
+    for (int i = 0; i < colours.size(); i++) {
+        colours[i].setScale(scale);
+    }
 }
 
 void Palette::draw() {
     glColor3f(1.0f, 1.0f, 1.0f);
     glBegin(GL_LINE_LOOP);
-    glVertex2f(x, y);
-    glVertex2f(x + width, y);
-    glVertex2f(x + width, y + height);
-    glVertex2f(x, y + height);
+    glVertex2f(x * scale, y * scale);
+    glVertex2f(x * scale + width * scale, y * scale);
+    glVertex2f(x * scale + width * scale, y * scale + height * scale);
+    glVertex2f(x * scale, y * scale + height * scale);
     glEnd();
 
     for (int i = 0; i < colours.size(); i++) {
@@ -58,11 +62,19 @@ void Palette::draw() {
 
 float* Palette::handleClick(float inputX, float inputY) {
     for (int i = 0; i < colours.size(); i++) {
-        if (colours[i].clickInside(inputX, inputY)) {
+        if (colours[i].clickInside(inputX * scale, inputY * scale)) {
             return colours[i].getColour();
         }
     }
     float colourList[3] = { 0.0f, 0.0f, 0.0f };
     return colourList;
 
+}
+
+void Palette::setScale(float newScale) {
+    scale = newScale;
+
+    for (int i = 0; i < colours.size(); i++) {
+        colours[i].setScale(newScale);
+    }
 }

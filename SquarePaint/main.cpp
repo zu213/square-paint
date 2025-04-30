@@ -20,6 +20,7 @@ float gridGreen = 1.0f;
 float gridBlue = 1.0f;
 bool gridDisabled = false;
 Palette palette = Palette(-0.9, -0.5, 1.8, 0.5);
+float zoomLevel = 1.0f;
 
 void setupInitialSquares() {
     float indent = 2.0 / screenWidth;
@@ -38,8 +39,54 @@ void display() {
     glFlush();
 }
 
+void reshapeWindow(int width, int height) {
+    glViewport(0, 0, width, height);
+    screenWidth = width;
+    screenHeight = height;
+
+    float aspect = (float)width / (float)height;
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    // Apply zoom level (centered at origin)
+    float zoomedWidth = 1.0f * zoomLevel;
+    float zoomedHeight = 1.0f * zoomLevel;
+
+    if (aspect >= 1.0f) {
+        // Wide window
+        glOrtho(-aspect * zoomedWidth, aspect * zoomedWidth, -zoomedHeight, zoomedHeight, -1.0, 1.0);
+    }
+    else {
+        // Tall window
+        glOrtho(-zoomedWidth, zoomedWidth, -zoomedHeight / aspect, zoomedHeight / aspect, -1.0, 1.0);
+    }
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    float indent = 2.0 / screenWidth;
+    mainSquare->setScreenAttr(screenWidth, screenHeight);
+}
+
 void mouseClick(int button, int state, int x, int y) {
-    if (state == GLUT_DOWN) { // When the button is pressed
+
+    if (button == 3) { 
+        zoomLevel *= 1.1f; // increase zoom (smaller view area)
+        palette.setScale(zoomLevel);
+
+        reshapeWindow(screenWidth, screenHeight);
+
+        glutPostRedisplay();
+    }
+    else if (button == 4) { 
+        zoomLevel /= 1.1f;
+        reshapeWindow(screenWidth, screenHeight);
+        palette.setScale(zoomLevel);
+
+        glutPostRedisplay();
+
+    } else if (state == GLUT_DOWN) { // When the button is pressed
         if (button == GLUT_LEFT_BUTTON) {
             if (paletteVisible || paletteVisibleForGrid) {
                 float localX = ((x * 1.0f) / (screenWidth / 2)) - 1.0f;
@@ -76,7 +123,9 @@ void mouseClick(int button, int state, int x, int y) {
 void keyboardPress(unsigned char key, int x, int y) {
     if (key == 'p'){
         paletteVisible = !paletteVisible;
-        palette.initColours();
+        if (palette.colours.size() < 1) {
+            palette.initColours();
+        }
         display();
     }
     else if (key == 'o') {
@@ -91,14 +140,6 @@ void keyboardPress(unsigned char key, int x, int y) {
     glFlush();
 }
 
-void reshape(int width, int height) {
-    glViewport(0, 0, width, height);
-    screenWidth = width;
-    screenHeight = height;
-    float indent = 2.0 / screenWidth;
-    mainSquare->setScreenAttr(screenWidth, screenHeight);
-}
-
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutCreateWindow("Square paint");
@@ -108,7 +149,7 @@ int main(int argc, char** argv) {
     glutInitWindowPosition(50, 50); // Position the window
     glutMouseFunc(mouseClick);
     glutKeyboardFunc(keyboardPress);
-    glutReshapeFunc(reshape);
+    glutReshapeFunc(reshapeWindow);
     glutDisplayFunc(display);
     glutMainLoop();
 
