@@ -29,14 +29,14 @@ void Square::draw(float gridRed, float gridGreen, float gridBlue, bool disableGr
 }
 
 void Square::initSubsquares(){
-    float indent = 1.5f / screenWidth;
+    float indent = 1.5f / 215.0;
     float split = (width - indent) / 3;
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
             float xLocal = x + (split) * j;
             float yLocal = y + (split) * i;
             Square newSquare = Square(xLocal, yLocal, split, split, red, green, blue, screenWidth, screenHeight);
-            //newSquare.draw();
+            //newSquare.draw(s);
             subsquares.push_back(newSquare);
         }
     }
@@ -46,7 +46,7 @@ void Square::setColour(float localRed, float localGreen, float localBlue) {
     red = localRed;
     blue = localBlue;
     green = localGreen;
-    float indent = 2.0f / screenWidth;
+    float indent = 2.0f / 215.0;
 
     glColor3f(red, green, blue);
     glBegin(GL_QUADS);
@@ -58,33 +58,40 @@ void Square::setColour(float localRed, float localGreen, float localBlue) {
 }
 
 void Square::handleClick(int inputX, int inputY) {
-    if (subsquares.size() > 0) {
-        float localX = (inputX / (screenWidth / 2)) - 1;
-        float localY = (inputY / (screenHeight / 2)) - 1;
-        for (int i = 0; i < subsquares.size(); i++) {
-            if (subsquares[i].x + subsquares[i].width > localX && subsquares[i].y + subsquares[i].height > localY) {
-                subsquares[i].handleClick(inputX, inputY);
-                break;
+    float localX = ((inputX / (215.0 / 2)) - 1) * (screenWidth / 215.0);
+    float localY = ((inputY / (215.0 / 2)) - 1) * (screenHeight / 215.0);
+
+    if (x + width > localX && x < localX && y + height >localY && y < localY) {
+        if (subsquares.size() > 0) {
+            for (int i = 0; i < subsquares.size(); i++) {
+                if (subsquares[i].x + subsquares[i].width > localX && subsquares[i].y + subsquares[i].height > localY) {
+                    subsquares[i].handleClick(inputX, inputY);
+                    break;
+                }
             }
         }
-    } else if (screenWidth * width / 2 > 10 && screenHeight * height / 2 > 10) {
-        initSubsquares();
+        else {
+            initSubsquares();
+        }
     }
 }
 
 void Square::handleClick(int inputX, int inputY, float* colours) {
-    if (subsquares.size() > 0) {
-        float localX = (inputX / (screenWidth / 2)) - 1;
-        float localY = (inputY / (screenHeight / 2)) - 1;
-        for (int i = 0; i < subsquares.size(); i++) {
-            if (subsquares[i].x + subsquares[i].width > localX && subsquares[i].y + subsquares[i].height > localY) {
-                subsquares[i].handleClick(inputX, inputY, colours);
-                break;
+    float localX = ((inputX / (215.0 / 2)) - 1) * (screenWidth / 215.0);
+    float localY = ((inputY / (215.0 / 2)) - 1) * (screenHeight / 215.0);
+    if (x + width > localX && x < localX && y + height >localY && y < localY) {
+        if (subsquares.size() > 0) {
+
+            for (int i = 0; i < subsquares.size(); i++) {
+                if (subsquares[i].x + subsquares[i].width > localX && subsquares[i].y + subsquares[i].height > localY) {
+                    subsquares[i].handleClick(inputX, inputY, colours);
+                    break;
+                }
             }
         }
-    }
-    else {
-        setColour(colours[0] ,colours[1], colours[2]);
+        else {
+            setColour(colours[0], colours[1], colours[2]);
+        }
     }
 }
 
@@ -95,7 +102,6 @@ void Square::setScreenAttr(float newScreenWidth, float newScreenHeight) {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 subsquares[i * 3 + j].setScreenAttr(screenWidth, screenHeight);
-                //subsquares[i * 3 + j].draw();
             }
         }
     }

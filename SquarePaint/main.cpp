@@ -23,7 +23,7 @@ Palette palette = Palette(-0.9, -0.5, 1.8, 0.5);
 float zoomLevel = 1.0f;
 
 void setupInitialSquares() {
-    float indent = 2.0 / screenWidth;
+    float indent = 2.0 / 215.0;
     mainSquare = new Square(-1.0f + indent, -1.0f + indent, 2.0f - indent, 2.0f - indent, screenWidth, screenHeight);
     mainSquare->draw(gridRed, gridGreen, gridBlue, gridDisabled);
     mainSquare->initSubsquares();
@@ -49,24 +49,20 @@ void reshapeWindow(int width, int height) {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    // Apply zoom level (centered at origin)
-    float zoomedWidth = 1.0f * zoomLevel;
-    float zoomedHeight = 1.0f * zoomLevel;
 
     if (aspect >= 1.0f) {
         // Wide window
-        glOrtho(-aspect * zoomedWidth, aspect * zoomedWidth, -zoomedHeight, zoomedHeight, -1.0, 1.0);
+        glOrtho(-aspect * zoomLevel, aspect * zoomLevel, -zoomLevel, zoomLevel, -1.0, 1.0);
     }
     else {
         // Tall window
-        glOrtho(-zoomedWidth, zoomedWidth, -zoomedHeight / aspect, zoomedHeight / aspect, -1.0, 1.0);
+        glOrtho(-zoomLevel, zoomLevel, -zoomLevel / aspect, zoomLevel / aspect, -1.0, 1.0);
     }
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    float indent = 2.0 / screenWidth;
-    mainSquare->setScreenAttr(screenWidth, screenHeight);
+    mainSquare->setScreenAttr(zoomLevel * 215, zoomLevel * 215);
 }
 
 void mouseClick(int button, int state, int x, int y) {
