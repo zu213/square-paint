@@ -10,7 +10,7 @@ public:
 
     PaletteColour(float x, float y, float width, float height, float red, float green, float blue);
 
-    void draw();
+    void draw(float panX, float panY);
 
     float* getColour();
 

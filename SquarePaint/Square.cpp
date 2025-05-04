@@ -4,10 +4,10 @@
 #include <iostream>
 
 Square::Square(float x, float y, float width, float height, float screenWidth, float screenHeight)
-    : x(x), y(y), width(width), height(height), red(0.0f), green(0.0f), blue(0.0f), screenWidth(screenWidth), screenHeight(screenHeight) {}
+    : x(x), y(y), width(width), height(height), red(0.0f), green(0.0f), blue(0.0f), screenWidth(screenWidth), screenHeight(screenHeight), panX(0), panY(0) {}
 
-Square::Square(float x, float y, float width, float height, float red, float green, float blue, float screenWidth, float screenHeight)
-    : x(x), y(y), width(width), height(height), red(red), green(green), blue(blue), screenWidth(screenWidth), screenHeight(screenHeight) {}
+Square::Square(float x, float y, float width, float height, float red, float green, float blue, float screenWidth, float screenHeight, float panX, float panY)
+    : x(x), y(y), width(width), height(height), red(red), green(green), blue(blue), screenWidth(screenWidth), screenHeight(screenHeight), panX(panX), panY(panY) {}
 
 void Square::draw(float gridRed, float gridGreen, float gridBlue, bool disableGrid) {
     if (!disableGrid) {
@@ -35,7 +35,7 @@ void Square::initSubsquares(){
         for (int j = 0; j < 3; j++) {
             float xLocal = x + (split) * j;
             float yLocal = y + (split) * i;
-            Square newSquare = Square(xLocal, yLocal, split, split, red, green, blue, screenWidth, screenHeight);
+            Square newSquare = Square(xLocal, yLocal, split, split, red, green, blue, screenWidth, screenHeight, panX, panY);
             //newSquare.draw(s);
             subsquares.push_back(newSquare);
         }
@@ -61,10 +61,10 @@ void Square::handleClick(int inputX, int inputY) {
     float localX = ((inputX / (215.0 / 2)) - 1) * (screenWidth / 215.0);
     float localY = ((inputY / (215.0 / 2)) - 1) * (screenHeight / 215.0);
 
-    if (x + width > localX && x < localX && y + height >localY && y < localY) {
+    if (x + panX + width > localX && x + panX < localX && y + panY + height >localY && y + panY < localY) {
         if (subsquares.size() > 0) {
             for (int i = 0; i < subsquares.size(); i++) {
-                if (subsquares[i].x + subsquares[i].width > localX && subsquares[i].y + subsquares[i].height > localY) {
+                if (subsquares[i].x + panX + subsquares[i].width > localX && subsquares[i].y + panY + subsquares[i].height > localY) {
                     subsquares[i].handleClick(inputX, inputY);
                     break;
                 }
@@ -79,11 +79,11 @@ void Square::handleClick(int inputX, int inputY) {
 void Square::handleClick(int inputX, int inputY, float* colours) {
     float localX = ((inputX / (215.0 / 2)) - 1) * (screenWidth / 215.0);
     float localY = ((inputY / (215.0 / 2)) - 1) * (screenHeight / 215.0);
-    if (x + width > localX && x < localX && y + height >localY && y < localY) {
+    if (x + panX + width > localX && x + panX < localX && y + panY + height >localY && y + panY < localY) {
         if (subsquares.size() > 0) {
 
             for (int i = 0; i < subsquares.size(); i++) {
-                if (subsquares[i].x + subsquares[i].width > localX && subsquares[i].y + subsquares[i].height > localY) {
+                if (subsquares[i].x + panX + subsquares[i].width > localX && subsquares[i].y + panY + subsquares[i].height > localY) {
                     subsquares[i].handleClick(inputX, inputY, colours);
                     break;
                 }
@@ -95,13 +95,15 @@ void Square::handleClick(int inputX, int inputY, float* colours) {
     }
 }
 
-void Square::setScreenAttr(float newScreenWidth, float newScreenHeight) {
+void Square::setScreenAttr(float newScreenWidth, float newScreenHeight, float localPanX, float localPanY) {
     screenWidth = newScreenWidth;
     screenHeight = newScreenHeight;
+    panX = localPanX;
+    panY = localPanY;
     if (subsquares.size() > 0) {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                subsquares[i * 3 + j].setScreenAttr(screenWidth, screenHeight);
+                subsquares[i * 3 + j].setScreenAttr(screenWidth, screenHeight, panX, panY);
             }
         }
     }

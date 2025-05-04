@@ -85,6 +85,7 @@ void mouseClick(int button, int state, int x, int y) {
         if (button == GLUT_LEFT_BUTTON) {
             if (paletteVisible || paletteVisibleForGrid) {
                 float localX = ((x * 1.0f) / (screenWidth / 2)) - 1.0f;
+                std::cout << panX;
                 float localY = ((y * -1.0f + screenHeight) / (screenHeight / 2)) - 1.0f;
                 float* newColours = palette.handleClick(localX, localY);
                 if (paletteVisible) {

@@ -14,7 +14,7 @@ public:
 
     void initColours();
 
-    void draw();
+    void draw(float panX, float panY);
 
     float* handleClick(float inputX, float inputY);
 

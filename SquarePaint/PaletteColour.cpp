@@ -6,13 +6,16 @@ PaletteColour::PaletteColour(float x, float y, float width, float height, float 
 	: x(x), y(y), width(width), height(height), red(red), green(green), blue(blue), scale(1.0f) {}
 
 
-void PaletteColour::draw() {
+void PaletteColour::draw(float panX, float panY) {
+    float localX = x + panX;
+    float localY = y + panY;
+
     glColor3f(red, green, blue);
     glBegin(GL_QUADS);
-    glVertex2f(x * scale, y * scale);
-    glVertex2f(x * scale + width * scale, y * scale);
-    glVertex2f(x * scale + width * scale, y * scale + height * scale);
-    glVertex2f(x * scale, y * scale + height * scale);
+    glVertex2f(localX * scale, localY * scale);
+    glVertex2f(localX * scale + width * scale, localY * scale);
+    glVertex2f(localX * scale + width * scale, localY * scale + height * scale);
+    glVertex2f(localX * scale, localY * scale + height * scale);
     glEnd();
 }
 

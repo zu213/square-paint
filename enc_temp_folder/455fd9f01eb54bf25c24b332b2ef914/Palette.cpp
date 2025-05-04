@@ -65,6 +65,7 @@ void Palette::draw(float panX, float panY) {
 
 
 float* Palette::handleClick(float inputX, float inputY) {
+    std::cout <<  "x: " << x << " y:" << y << " inp: " << inputX << '\n';
     for (int i = 0; i < colours.size(); i++) {
         if (colours[i].clickInside(inputX * scale, inputY * scale)) {
             return colours[i].getColour();
