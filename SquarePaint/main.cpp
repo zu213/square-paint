@@ -60,8 +60,8 @@ void reshapeWindow(int width, int height) {
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-
-    mainSquare->setScreenAttr(zoomLevel * 215, zoomLevel * 215, -panX, -panY);
+    std::cout << "Window resized to " << width << "x" << height << std::endl;
+    mainSquare->setScreenAttr(zoomLevel * width, zoomLevel * height, -panX, -panY);
 }
 
 void mouseClick(int button, int state, int x, int y) {
@@ -105,11 +105,17 @@ void mouseClick(int button, int state, int x, int y) {
                 newColours[0] = currentRed;
                 newColours[1] = currentGreen;
                 newColours[2] = currentBlue;
-                mainSquare->handleClick(x, y * -1 + screenHeight, newColours);
+                float localX = ((float)(x - screenWidth / 2)) / ((float)min(screenWidth, screenHeight) / 2) * zoomLevel;
+                float localY = -((float)(y - screenHeight / 2)) / ((float)min(screenWidth, screenHeight) / 2) * zoomLevel;
+                std::cout << "screenehigth: " << screenHeight << " x:" << zoomLevel << " y: " << y << " height2 " << localY << std::endl;
+
+                mainSquare->handleClick(localX,localY, newColours);
             }
         }
         else if (button == GLUT_RIGHT_BUTTON) {
-            mainSquare->handleClick(x, y * -1 + screenHeight);
+            float localX = ((float)(x - screenWidth / 2)) / ((float)min(screenWidth, screenHeight) / 2) * zoomLevel;
+            float localY = -((float)(y - screenHeight / 2)) / ((float)min(screenWidth, screenHeight) / 2) * zoomLevel;
+            mainSquare->handleClick(localX, localY);
         }
         glFlush();
     }

@@ -22,9 +22,9 @@ public:
 
     void draw(float gridRed, float gridGreen, float gridBlue, bool disableGrid);
 
-    void handleClick(int inputX, int inputY);
+    void handleClick(float inputX, float inputY);
 
-    void handleClick(int inputX, int inputY, float* colours);
+    void handleClick(float inputX, float inputY, float* colours);
 
     void setScreenAttr(float newScreenWidth, float newScreenHeight, float panX, float panY);
 

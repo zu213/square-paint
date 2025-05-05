@@ -29,7 +29,7 @@ void Square::draw(float gridRed, float gridGreen, float gridBlue, bool disableGr
 }
 
 void Square::initSubsquares(){
-    float indent = 1.5f / 215.0;
+    float indent = 0.0f; //1.5f / 215.0;
     float split = (width - indent) / 3;
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
@@ -46,7 +46,7 @@ void Square::setColour(float localRed, float localGreen, float localBlue) {
     red = localRed;
     blue = localBlue;
     green = localGreen;
-    float indent = 2.0f / 215.0;
+    float indent = 0.0f;//2.0f / 215.0;
 
     glColor3f(red, green, blue);
     glBegin(GL_QUADS);
@@ -57,14 +57,12 @@ void Square::setColour(float localRed, float localGreen, float localBlue) {
     glEnd();
 }
 
-void Square::handleClick(int inputX, int inputY) {
-    float localX = ((inputX / (215.0 / 2)) - 1) * (screenWidth / 215.0);
-    float localY = ((inputY / (215.0 / 2)) - 1) * (screenHeight / 215.0);
+void Square::handleClick(float inputX, float inputY) {
 
-    if (x + panX + width > localX && x + panX < localX && y + panY + height >localY && y + panY < localY) {
+    if (x + panX + width > inputX && x + panX < inputX && y + panY + height >inputY && y + panY < inputY) {
         if (subsquares.size() > 0) {
             for (int i = 0; i < subsquares.size(); i++) {
-                if (subsquares[i].x + panX + subsquares[i].width > localX && subsquares[i].y + panY + subsquares[i].height > localY) {
+                if (subsquares[i].x + panX + subsquares[i].width > inputX && subsquares[i].y + panY + subsquares[i].height > inputY) {
                     subsquares[i].handleClick(inputX, inputY);
                     break;
                 }
@@ -76,14 +74,14 @@ void Square::handleClick(int inputX, int inputY) {
     }
 }
 
-void Square::handleClick(int inputX, int inputY, float* colours) {
-    float localX = ((inputX / (215.0 / 2)) - 1) * (screenWidth / 215.0);
-    float localY = ((inputY / (215.0 / 2)) - 1) * (screenHeight / 215.0);
-    if (x + panX + width > localX && x + panX < localX && y + panY + height >localY && y + panY < localY) {
-        if (subsquares.size() > 0) {
+void Square::handleClick(float inputX, float inputY, float* colours) {
 
+    if (x + panX + width > inputX && x + panX < inputX && y + panY + height >inputY && y + panY < inputY) {
+        if (subsquares.size() > 0) {
             for (int i = 0; i < subsquares.size(); i++) {
-                if (subsquares[i].x + panX + subsquares[i].width > localX && subsquares[i].y + panY + subsquares[i].height > localY) {
+                std::cout << " stuff " << subsquares[i].y + panY + subsquares[i].height;
+
+                if (subsquares[i].x + panX + subsquares[i].width > inputX && subsquares[i].y + panY + subsquares[i].height > inputY) {
                     subsquares[i].handleClick(inputX, inputY, colours);
                     break;
                 }
