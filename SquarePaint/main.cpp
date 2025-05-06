@@ -5,10 +5,10 @@
 #include "Square.h"
 #include "Palette.h"
 
-// only expands the squares absed on width of window
+
+// lots of global variables, mainly information for the main square
 int screenWidth = 215;
 int screenHeight = 215;
-
 Square* mainSquare = nullptr;
 float currentRed = 1.0f;
 float currentGreen = 0.0f;
@@ -31,9 +31,10 @@ void setupInitialSquares() {
 }
 
 void display() {
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Set background color to black and opaque
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
+    // Display palette and square
     if (mainSquare) mainSquare->draw(gridRed, gridGreen, gridBlue, gridDisabled);
     if (paletteVisible || paletteVisibleForGrid) palette.draw(panX / zoomLevel, panY / zoomLevel);
 
@@ -41,6 +42,8 @@ void display() {
 }
 
 void reshapeWindow(int width, int height) {
+    // Handle zooming, panning and resizing of the window.
+
     glViewport(0, 0, width, height);
     screenWidth = width;
     screenHeight = height;
@@ -60,29 +63,32 @@ void reshapeWindow(int width, int height) {
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    std::cout << "Window resized to " << width << "x" << height << std::endl;
     mainSquare->setScreenAttr(zoomLevel * width, zoomLevel * height, -panX, -panY);
 }
 
 void mouseClick(int button, int state, int x, int y) {
-
+    // zoom in
     if (button == 3) { 
-        zoomLevel *= 1.1f; // increase zoom (smaller view area)
+        zoomLevel *= 1.1f;
         palette.setScale(zoomLevel);
 
         reshapeWindow(screenWidth, screenHeight);
 
         glutPostRedisplay();
     }
+    // zoom out
     else if (button == 4) { 
         zoomLevel /= 1.1f;
         reshapeWindow(screenWidth, screenHeight);
         palette.setScale(zoomLevel);
 
         glutPostRedisplay();
-
-    } else if (state == GLUT_DOWN) {
+    
+    }
+    else if (state == GLUT_DOWN) {
+        // left click
         if (button == GLUT_LEFT_BUTTON) {
+            // if palette is open handle click with that
             if (paletteVisible || paletteVisibleForGrid) {
                 float localX = ((x * 1.0f) / (screenWidth / 2)) - 1.0f;
                 float localY = ((y * -1.0f + screenHeight) / (screenHeight / 2)) - 1.0f;
@@ -107,11 +113,11 @@ void mouseClick(int button, int state, int x, int y) {
                 newColours[2] = currentBlue;
                 float localX = ((float)(x - screenWidth / 2)) / ((float)min(screenWidth, screenHeight) / 2) * zoomLevel;
                 float localY = -((float)(y - screenHeight / 2)) / ((float)min(screenWidth, screenHeight) / 2) * zoomLevel;
-                std::cout << "screenehigth: " << screenHeight << " x:" << zoomLevel << " y: " << y << " height2 " << localY << std::endl;
 
                 mainSquare->handleClick(localX,localY, newColours);
             }
         }
+        // right click
         else if (button == GLUT_RIGHT_BUTTON) {
             float localX = ((float)(x - screenWidth / 2)) / ((float)min(screenWidth, screenHeight) / 2) * zoomLevel;
             float localY = -((float)(y - screenHeight / 2)) / ((float)min(screenWidth, screenHeight) / 2) * zoomLevel;
@@ -122,6 +128,7 @@ void mouseClick(int button, int state, int x, int y) {
 }
 
 void keyboardPress(unsigned char key, int x, int y) {
+    // p opens palette
     if (key == 'p'){
         paletteVisible = !paletteVisible;
         if (palette.colours.size() < 1) {
@@ -129,10 +136,12 @@ void keyboardPress(unsigned char key, int x, int y) {
         }
         display();
     }
+    // o hides grid
     else if (key == 'o') {
         gridDisabled = !gridDisabled;
         display();
     }
+    // i opens palette for grod
     else if (key == 'i') {
         paletteVisibleForGrid = !paletteVisibleForGrid;
         palette.initColours();
@@ -142,7 +151,7 @@ void keyboardPress(unsigned char key, int x, int y) {
 }
 
 void handleArrowKeys(int key, int x, int y) {
-
+    // handle panning
     float panStep = 0.05f * zoomLevel;
 
     switch (key) {
@@ -170,8 +179,8 @@ int main(int argc, char** argv) {
     glutCreateWindow("Square paint");
     setupInitialSquares();
     glutReshapeWindow(screenWidth, screenHeight);
-    glutInitWindowSize(screenWidth, screenHeight);   // Set the window's initial width & height
-    glutInitWindowPosition(50, 50); // Position the window
+    glutInitWindowSize(screenWidth, screenHeight);
+    glutInitWindowPosition(50, 50);
     glutMouseFunc(mouseClick);
     glutKeyboardFunc(keyboardPress);
     glutReshapeFunc(reshapeWindow);

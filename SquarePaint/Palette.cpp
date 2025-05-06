@@ -17,9 +17,11 @@ void Palette::initColours() {
     int countTotal = (width - (2.6f / 215)) * 215 / 2;
     float colourInterval = 1.0f / (countTotal / 3);
 
+    // add white
     colours.push_back(PaletteColour(modX, modY, modWidth, modHeight, 1.0f, 1.0f, 1.0f));
     modX += (2.0f / 215);
 
+    // add the rgb colours appropriately
     for (int i = 0; i < countTotal; i++) {
         colours.push_back(PaletteColour(modX, modY, modWidth, modHeight, red, green, blue));
         if (i < countTotal / 3) {
@@ -46,7 +48,7 @@ void Palette::initColours() {
 }
 
 void Palette::draw(float panX, float panY) {
-
+    // render the palette using the colours list
     float localX = x + panX;
     float localY = y + panY;
 
@@ -65,6 +67,7 @@ void Palette::draw(float panX, float panY) {
 
 
 float* Palette::handleClick(float inputX, float inputY) {
+    // handle clicks iteratively
     for (int i = 0; i < colours.size(); i++) {
         if (colours[i].clickInside(inputX * scale, inputY * scale)) {
             return colours[i].getColour();
@@ -76,6 +79,7 @@ float* Palette::handleClick(float inputX, float inputY) {
 }
 
 void Palette::setScale(float newScale) {
+    // Palette resizes/moves with the window
     scale = newScale;
 
     for (int i = 0; i < colours.size(); i++) {

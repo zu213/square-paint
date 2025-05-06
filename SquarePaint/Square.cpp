@@ -23,20 +23,19 @@ void Square::draw(float gridRed, float gridGreen, float gridBlue, bool disableGr
 
     setColour(red, green, blue);
 
+    // draw squares recursively
     for (int i = 0; i < subsquares.size(); i++) {
         subsquares[i].draw(gridRed, gridGreen, gridBlue, disableGrid);
     }
 }
 
 void Square::initSubsquares(){
-    float indent = 0.0f; //1.5f / 215.0;
-    float split = (width - indent) / 3;
+    float split = (width) / 3;
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
             float xLocal = x + (split) * j;
             float yLocal = y + (split) * i;
             Square newSquare = Square(xLocal, yLocal, split, split, red, green, blue, screenWidth, screenHeight, panX, panY);
-            //newSquare.draw(s);
             subsquares.push_back(newSquare);
         }
     }
@@ -46,19 +45,18 @@ void Square::setColour(float localRed, float localGreen, float localBlue) {
     red = localRed;
     blue = localBlue;
     green = localGreen;
-    float indent = 0.0f;//2.0f / 215.0;
 
     glColor3f(red, green, blue);
     glBegin(GL_QUADS);
     glVertex2f(x, y);
-    glVertex2f(x + width - indent, y);
-    glVertex2f(x + width - indent, y + height - indent);
-    glVertex2f(x, y + height - indent);
+    glVertex2f(x + width, y);
+    glVertex2f(x + width, y + height);
+    glVertex2f(x, y + height);
     glEnd();
 }
 
 void Square::handleClick(float inputX, float inputY) {
-
+    // handle right click recursively
     if (x + panX + width > inputX && x + panX < inputX && y + panY + height >inputY && y + panY < inputY) {
         if (subsquares.size() > 0) {
             for (int i = 0; i < subsquares.size(); i++) {
@@ -75,12 +73,10 @@ void Square::handleClick(float inputX, float inputY) {
 }
 
 void Square::handleClick(float inputX, float inputY, float* colours) {
-
+    // handle left click recursively
     if (x + panX + width > inputX && x + panX < inputX && y + panY + height >inputY && y + panY < inputY) {
         if (subsquares.size() > 0) {
             for (int i = 0; i < subsquares.size(); i++) {
-                std::cout << " stuff " << subsquares[i].y + panY + subsquares[i].height;
-
                 if (subsquares[i].x + panX + subsquares[i].width > inputX && subsquares[i].y + panY + subsquares[i].height > inputY) {
                     subsquares[i].handleClick(inputX, inputY, colours);
                     break;
@@ -94,6 +90,7 @@ void Square::handleClick(float inputX, float inputY, float* colours) {
 }
 
 void Square::setScreenAttr(float newScreenWidth, float newScreenHeight, float localPanX, float localPanY) {
+    // Update window attributes recursively so that able to resize/zoom/pan window
     screenWidth = newScreenWidth;
     screenHeight = newScreenHeight;
     panX = localPanX;
