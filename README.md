@@ -6,6 +6,10 @@ Paint a picture using dividable squares
 
 ## Use
 
+Run by way of the executable: `.\x64\Release\SquarePaint.exe`
+
+Controls are as follows:
+
 <ul>
 <li>Left click to colour in a square</li>
 <li>Right-click to divide the square into 9 sub squares</li>
@@ -18,4 +22,4 @@ Paint a picture using dividable squares
 
 ### nota bene
 
-This project utilises `GLUT` and paints the squares recursively.
+This project utilises `GLUT` and paints the squares recursively, therefore it is build to work on `x64` Windows.
